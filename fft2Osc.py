@@ -30,12 +30,16 @@ stream = p.open(format=FORMAT,
               channels=CHANNELS,
               rate=RATE,
               input=True,
-              input_device_index=1,
+              input_device_index=2,
               frames_per_buffer=CHUNK)
 
-while (True):
-  data = stream.read(CHUNK) 
-  fft = np.fft.fft(data)
-  client.send_message("/fft", fft)
-  time.sleep(1)
+if __name__ == "__main__":
+  while (True):
+    data = stream.read(CHUNK) 
+    numpydata = np.fromstring(data, dtype=np.int16)
+
+    fft = np.real(np.fft.fft(numpydata))
+    print(fft)
+    client.send_message("/fft", fft)
+    time.sleep(1)
 
